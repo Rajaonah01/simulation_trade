@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Horloge d'Amour Complète 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff5f9e, #ff9a9e);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .clock-box {
+    background: rgba(255,255,255,0.2);
+    padding: 30px 50px;
+    border-radius: 25px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fadeIn 1.5s ease;
+  }
+
+  .time {
+    font-size: 60px;
+    font-weight: bold;
+    letter-spacing: 3px;
+  }
+
+  .date {
+    font-size: 20px;
+    margin-top: 5px;
+  }
+
+  .love-text {
+    margin-top: 25px;
+    font-size: 22px;
+    font-style: italic;
+    animation: pulse 2s infinite;
+  }
+
+  .heart {
+    font-size: 35px;
+    margin-top: 15px;
+    animation: beat 1s infinite;
+  }
+
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="clock-box">
+  <div class="time" id="clock">00:00:00</div>
+  <div class="date" id="date">01/01/2026</div>
+  <div class="love-text" id="loveText">Je t’aime ❤️</div>
+  <div class="heart">💖</div>
+</div>
+
+<!-- Musique douce en fond (optionnelle) -->
+<audio id="loveMusic" src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" autoplay loop></audio>
+
+<script>
+  // Fonction horloge
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    document.getElementById("date").textContent = `${day}/${month}/${year}`;
+  }
+
+  // Messages d'amour
+  const loveMessages = [
+    "Je t’aime plus que tout Mon Vanessa ❤️",
+    "Mon cœur est à toi 💕",
+    "Chaque seconde je pense à toi ⏰",
+    "Tu es mon bonheur 💖",
+    "Avec toi pour toujours 💞",
+    "L’amour n’a pas d’heure ⏳❤️",
+    "Mon amour, tu es magique ✨",
+    "Ton sourire illumine mes jours 🌟"
+  ];
+
+  let index = 0;
+  function changeLoveText() {
+    document.getElementById("loveText").textContent = loveMessages[index];
+    index = (index + 1) % loveMessages.length;
+  }
+
+  setInterval(updateClock, 1000);
+  setInterval(changeLoveText, 4000);
+
+  updateClock();
+</script>
+
+</body>
+</html>
