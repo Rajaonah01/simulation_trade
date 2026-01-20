@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+<meta charset="UTF-8">
+<title>TradeGasy – Fianarana Trading</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+  background: radial-gradient(circle at top,#0b1d2a,#000);
+  color:#fff;
+  font-family:Segoe UI;
+}
+.card{
+  background:#0f172a;
+  border-radius:16px;
+  box-shadow:0 0 25px rgba(0,255,255,.15);
+}
+h1 span{color:#0dcaf0}
+.badge-box span{margin:4px;font-size:14px}
+select,input{background:#020617!important;color:white!important}
+</style>
+</head>
+
+<body>
+
+<div class="container py-4">
+<h1 class="text-center mb-4">📈 <span>TradeGasy</span> – Mianatra Trading</h1>
+
+<!-- STATS -->
+<div class="row mb-4">
+  <div class="col-md-4"><div class="card p-3 text-center">
+    <h6>💰 Vola</h6><h2 id="balance">1000 $</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 text-center">
+    <h6>⭐ Haavo</h6><h2 id="level">Vao Manomboka</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 text-center badge-box">
+    <h6>🏆 Mari-boninahitra</h6><span id="badges">—</span></div></div>
+</div>
+
+<!-- MARKET SELECT -->
+<div class="card p-3 mb-3">
+<h5>💹 Safidio ny tsena</h5>
+<select class="form-select mb-2" id="market" onchange="changeMarket()">
+<option value="BINANCE:BTCUSDT">Crypto – BTC/USDT</option>
+<option value="FX:EURUSD">Forex – EUR/USD</option>
+<option value="NASDAQ:AAPL">Action – Apple</option>
+<option value="NASDAQ:TSLA">Action – Tesla</option>
+</select>
+</div>
+
+<!-- GRAPH -->
+<div class="card p-3 mb-4">
+<h5>📊 Grafika ara-potoana</h5>
+<div id="tv"></div>
+</div>
+
+<!-- TRADING -->
+<div class="card p-4 mb-4">
+<h5>🧪 Trading Simulation (Tena izy)</h5>
+
+<label>Vola ampidirina ($)</label>
+<input type="number" id="amount" class="form-control mb-3" value="50">
+
+<div class="d-flex gap-3">
+<button class="btn btn-success w-50" onclick="trade('buy')">BUY</button>
+<button class="btn btn-danger w-50" onclick="trade('sell')">SELL</button>
+</div>
+
+<p class="mt-3" id="result"></p>
+</div>
+
+<!-- EDUCATION -->
+<div class="card p-4">
+<h5>📚 Fampianarana Trading</h5>
+<ul>
+<li>📌 Tsy mora ny mandresy – 40-50% ihany no mandresy</li>
+<li>📌 Misy <b>spread & fees</b></li>
+<li>📌 Aza atao vola tena izy raha tsy efa mahay</li>
+<li>📌 Practice no zava-dehibe</li>
+</ul>
+</div>
+</div>
+
+<!-- TradingView -->
+<script src="https://s3.tradingview.com/tv.js"></script>
+
+<script>
+let balance = 1000;
+let xp = 0;
+let badges = [];
+let winRate = 0.45; // anti fake
+let spread = 0.02;
+
+let widget;
+
+function createChart(symbol){
+  if(widget) widget.remove();
+  widget = new TradingView.widget({
+    container_id:"tv",
+    width:"100%",
+    height:400,
+    symbol:symbol,
+    interval:"15",
+    timezone:"Africa/Nairobi",
+    theme:"dark",
+    locale:"fr"
+  });
+}
+
+createChart("BINANCE:BTCUSDT");
+
+function changeMarket(){
+  createChart(document.getElementById("market").value);
+}
+
+function trade(type){
+  let amt = Number(amount.value);
+  if(amt<=0 || amt>balance) return alert("Vola tsy ampy");
+
+  let win = Math.random() < winRate;
+  let pnl;
+
+  if(win){
+    pnl = amt*(0.05+Math.random()*0.08); // 5–13%
+    balance += pnl - (amt*spread);
+    xp += 10;
+    result.innerHTML="✅ Trade nandresy : +"+pnl.toFixed(2)+"$";
+  }else{
+    pnl = amt*(0.08+Math.random()*0.12); // 8–20%
+    balance -= pnl;
+    xp += 4;
+    result.innerHTML="❌ Trade resy : -"+pnl.toFixed(2)+"$";
+  }
+
+  balanceEl();
+  levelSystem();
+}
+
+function balanceEl(){
+  document.getElementById("balance").innerText=balance.toFixed(2)+" $";
+}
+
+function levelSystem(){
+  let lvl="Vao Manomboka";
+  if(xp>60) lvl="Trader Miasa";
+  if(xp>150) lvl="Trader Pro";
+
+  document.getElementById("level").innerText=lvl;
+
+  if(xp>30 && !badges.includes("🎖 Débutant")) badges.push("🎖 Débutant");
+  if(xp>90 && !badges.includes("🥈 Miasa")) badges.push("🥈 Miasa");
+  if(xp>180 && !badges.includes("🥇 Pro")) badges.push("🥇 Pro");
+
+  document.getElementById("badges").innerText=badges.join(" ");
+}
+</script>
+
+</body>
+</html>
