@@ -3,46 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <title>TradeGasy – Fianarana Trading</title>
+<link rel="shortcut icon" href="téléchargement.png" type="image/x-icon">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
+:root{
+  --bg-dark:#020617;
+  --bg-light:#f5f7fa;
+  --card-dark:#0f172a;
+  --card-light:#ffffff;
+  --text-dark:#ffffff;
+  --text-light:#000000;
+}
+
 body{
-  background: radial-gradient(circle at top,#0b1d2a,#000);
-  color:#fff;
+  background: radial-gradient(circle at top,#0b1d2a,#333131);
+  color:var(--text-dark);
   font-family:Segoe UI;
+  transition:0.4s;
 }
+
+body.light{
+  background:var(--bg-light);
+  color:var(--text-light);
+}
+
 .card{
-  background:#0f172a;
+  background:var(--card-dark);
   border-radius:16px;
-  box-shadow:0 0 25px rgba(0,255,255,.15);
+  box-shadow:0 0 25px rgba(121, 197, 197, 0.15);
+  transition:0.4s;
 }
+
+body.light .card{
+  background:var(--card-light);
+  box-shadow:0 0 15px rgba(0,0,0,.15);
+}
+
+select,input{
+  background:#020617!important;
+  color:white!important;
+}
+
+body.light select,
+body.light input{
+  background:#e9ecef!important;
+  color:black!important;
+}
+
 h1 span{color:#0dcaf0}
 .badge-box span{margin:4px;font-size:14px}
-select,input{background:#020617!important;color:white!important}
+
+/* CLOCK */
+#clock{
+  background:linear-gradient(135deg,#0dcaf0,#003049);
+  color:white;
+  box-shadow:0 0 15px rgba(0,255,255,0.6);
+}
 </style>
 </head>
 
 <body>
 
 <div class="container py-4">
-<h1 class="text-center mb-4">📈 <span>TradeGasy</span> – Mianatra Trading</h1>
+
+<!-- MODE TOGGLE -->
+<div class="text-end mb-2">
+<button class="btn btn-outline-info btn-sm" onclick="toggleTheme()">☀️ / 🌙</button>
+</div>
+
+<h1 class="text-center mb-2">📈 <span>TradeGasy</span> – Mianatra Trading</h1>
+
+<!-- CLOCK -->
+<div class="text-center mb-4">
+  <div id="clock" class="px-4 py-2 d-inline-block rounded">
+    <div id="time" style="font-size:2rem;font-weight:bold;"></div>
+    <div id="date" style="font-size:0.9rem;opacity:0.85;"></div>
+  </div>
+</div>
 
 <!-- STATS -->
 <div class="row mb-4">
-  <div class="col-md-4"><div class="card p-3 text-center">
-    <h6>💰 Vola</h6><h2 id="balance">1000 $</h2></div></div>
-  <div class="col-md-4"><div class="card p-3 text-center">
-    <h6>⭐ Haavo</h6><h2 id="level">Vao Manomboka</h2></div></div>
-  <div class="col-md-4"><div class="card p-3 text-center badge-box">
-    <h6>🏆 Mari-boninahitra</h6><span id="badges">—</span></div></div>
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      <h6>💰 Vola</h6><h2 id="balance">1000 $</h2>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      <h6>⭐ Haavo</h6><h2 id="level">Vao Manomboka</h2>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 text-center badge-box">
+      <h6>🏆 Mari-boninahitra</h6><span id="badges">—</span>
+    </div>
+  </div>
 </div>
 
-<!-- MARKET SELECT -->
+<!-- MARKET -->
 <div class="card p-3 mb-3">
 <h5>💹 Safidio ny tsena</h5>
-<select class="form-select mb-2" id="market" onchange="changeMarket()">
+<select class="form-select" id="market" onchange="changeMarket()">
 <option value="BINANCE:BTCUSDT">Crypto – BTC/USDT</option>
 <option value="FX:EURUSD">Forex – EUR/USD</option>
 <option value="NASDAQ:AAPL">Action – Apple</option>
@@ -59,13 +123,12 @@ select,input{background:#020617!important;color:white!important}
 <!-- TRADING -->
 <div class="card p-4 mb-4">
 <h5>🧪 Trading Simulation (Tena izy)</h5>
-
 <label>Vola ampidirina ($)</label>
 <input type="number" id="amount" class="form-control mb-3" value="50">
 
 <div class="d-flex gap-3">
-<button class="btn btn-success w-50" onclick="trade('buy')">BUY</button>
-<button class="btn btn-danger w-50" onclick="trade('sell')">SELL</button>
+<button class="btn btn-success w-50" onclick="trade()">BUY</button>
+<button class="btn btn-danger w-50" onclick="trade()">SELL</button>
 </div>
 
 <p class="mt-3" id="result"></p>
@@ -75,85 +138,91 @@ select,input{background:#020617!important;color:white!important}
 <div class="card p-4">
 <h5>📚 Fampianarana Trading</h5>
 <ul>
-<li>📌 Tsy mora ny mandresy – 40-50% ihany no mandresy</li>
-<li>📌 Misy <b>spread & fees</b></li>
+<li>📌 40–50% ihany no mandresy</li>
+<li>📌 Misy spread & fees</li>
 <li>📌 Aza atao vola tena izy raha tsy efa mahay</li>
-<li>📌 Practice no zava-dehibe</li>
+<li>📌 Practice aloha</li>
 </ul>
 </div>
+
 </div>
 
-<!-- TradingView -->
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
-let balance = 1000;
-let xp = 0;
-let badges = [];
-let winRate = 0.45; // anti fake
-let spread = 0.02;
+/* CLOCK */
+function updateClock(){
+  const now=new Date();
+  time.innerText=now.toLocaleTimeString("fr-FR");
+  date.innerText=now.toLocaleDateString("mg-MG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+}
+setInterval(updateClock,1000);
+updateClock();
+
+/* THEME */
+function toggleTheme(){
+  document.body.classList.toggle("light");
+}
+
+/* TRADING */
+let balance=1000,xp=0,badges=[],winRate=0.45,spread=0.02;
+balanceEl();
 
 let widget;
-
 function createChart(symbol){
   if(widget) widget.remove();
-  widget = new TradingView.widget({
+  widget=new TradingView.widget({
     container_id:"tv",
     width:"100%",
     height:400,
     symbol:symbol,
     interval:"15",
-    timezone:"Africa/Nairobi",
-    theme:"dark",
-    locale:"fr"
+    theme:"dark"
   });
 }
-
 createChart("BINANCE:BTCUSDT");
 
 function changeMarket(){
-  createChart(document.getElementById("market").value);
+  createChart(market.value);
 }
 
-function trade(type){
-  let amt = Number(amount.value);
-  if(amt<=0 || amt>balance) return alert("Vola tsy ampy");
+function trade(){
+  let amt=Number(amount.value);
+  if(amt<=0||amt>balance) return alert("Vola tsy ampy");
 
-  let win = Math.random() < winRate;
+  let win=Math.random()<winRate;
   let pnl;
 
   if(win){
-    pnl = amt*(0.05+Math.random()*0.08); // 5–13%
-    balance += pnl - (amt*spread);
-    xp += 10;
-    result.innerHTML="✅ Trade nandresy : +"+pnl.toFixed(2)+"$";
+    pnl=amt*(0.05+Math.random()*0.08);
+    balance+=pnl-(amt*spread);
+    xp+=10;
+    result.innerText="✅ Nandresy : +"+pnl.toFixed(2)+"$";
   }else{
-    pnl = amt*(0.08+Math.random()*0.12); // 8–20%
-    balance -= pnl;
-    xp += 4;
-    result.innerHTML="❌ Trade resy : -"+pnl.toFixed(2)+"$";
+    pnl=amt*(0.08+Math.random()*0.12);
+    balance-=pnl;
+    xp+=4;
+    result.innerText="❌ Resy : -"+pnl.toFixed(2)+"$";
   }
-
-  balanceEl();
-  levelSystem();
+  balanceEl();levelSystem();
 }
 
 function balanceEl(){
-  document.getElementById("balance").innerText=balance.toFixed(2)+" $";
+  balanceEl=document.getElementById("balance");
+  balanceEl.innerText=balance.toFixed(2)+" $";
 }
 
 function levelSystem(){
   let lvl="Vao Manomboka";
   if(xp>60) lvl="Trader Miasa";
   if(xp>150) lvl="Trader Pro";
+  level.innerText=lvl;
 
-  document.getElementById("level").innerText=lvl;
+  if(xp>30&&!badges.includes("🎖 Débutant"))badges.push("🎖 Débutant");
+  if(xp>90&&!badges.includes("🥈 Miasa"))badges.push("🥈 Miasa");
+  if(xp>180&&!badges.includes("🥇 Pro"))badges.push("🥇 Pro");
 
-  if(xp>30 && !badges.includes("🎖 Débutant")) badges.push("🎖 Débutant");
-  if(xp>90 && !badges.includes("🥈 Miasa")) badges.push("🥈 Miasa");
-  if(xp>180 && !badges.includes("🥇 Pro")) badges.push("🥇 Pro");
-
-  document.getElementById("badges").innerText=badges.join(" ");
+  badgesEl.innerText=badges.join(" ");
 }
 </script>
 
